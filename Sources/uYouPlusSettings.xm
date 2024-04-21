@@ -54,7 +54,7 @@ extern NSBundle *uYouPlusBundle();
             return VERSION_STRING;
         }
         selectBlock:^BOOL (YTSettingsCell *cell, NSUInteger arg1) {
-            return [%c(YTUIUtils) openURL:[NSURL URLWithString:@"https://github.com/qnblackcat/uYouPlus/releases"]];
+            return [%c(YTUIUtils) openURL:[NSURL URLWithString:UYOUPLUS_RELEASES_URL]];
         }
     ];
     [sectionItems addObject:version];
@@ -65,7 +65,7 @@ extern NSBundle *uYouPlusBundle();
         accessibilityIdentifier:nil
         detailTextBlock:nil
         selectBlock:^BOOL (YTSettingsCell *cell, NSUInteger arg1) {
-            NSString *url = [NSString stringWithFormat:@"https://github.com/qnblackcat/uYouPlus/issues/new?assignees=&labels=bug&projects=&template=bug.yaml&title=[v%@] %@", VERSION_STRING, LOC(@"ADD_TITLE")];
+            NSString *url = [NSString stringWithFormat:UYOUPLUS_NEW_ISSUE_URL, VERSION_STRING, LOC(@"ADD_TITLE")];
 
             return [%c(YTUIUtils) openURL:[NSURL URLWithString:[url stringByReplacingOccurrencesOfString:@" " withString:@"%20"]]];
         }
