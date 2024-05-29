@@ -325,6 +325,33 @@ static BOOL findCell(ASNodeController *nodeController, NSArray <NSString *> *ide
 }
 %end
 
+// Fixes uYou crash when trying to play video (#1422)
+@interface YTVarispeedSwitchController : NSObject
+@end
+
+@interface YTPlayerOverlayManager : NSObject
+@property (nonatomic, assign) float currentPlaybackRate;
+@property (nonatomic, strong, readonly) YTVarispeedSwitchController *varispeedController;
+
+- (void)varispeedSwitchController:(YTVarispeedSwitchController *)varispeed didSelectRate:(float)rate;
+- (void)setCurrentPlaybackRate:(float)rate;
+- (void)setPlaybackRate:(float)rate;
+@end
+
+%hook YTPlayerOverlayManager
+%property (nonatomic, assign) float currentPlaybackRate;
+
+%new
+- (void)setCurrentPlaybackRate:(float)rate {
+    [self varispeedSwitchController:self.varispeedController didSelectRate:rate];
+}
+
+%new
+- (void)setPlaybackRate:(float)rate {
+    [self varispeedSwitchController:self.varispeedController didSelectRate:rate];
+}
+%end
+
 // Hide search ads by @PoomSmart - https://github.com/PoomSmart/YouTube-X
 // %hook YTIElementRenderer
 // - (NSData *)elementData {
@@ -353,6 +380,8 @@ static BOOL findCell(ASNodeController *nodeController, NSArray <NSString *> *ide
 - (BOOL)respectDeviceCaptionSetting { return NO; }
 // Swipe right to dismiss the right panel in fullscreen mode
 - (BOOL)isLandscapeEngagementPanelSwipeRightToDismissEnabled { return YES; }
+// Don't use new YT settings layout (Cairo Settings)
+- (BOOL)mainAppCoreClientEnableCairoSettings { return NO; }
 %end
 
 # pragma mark - Constructor
